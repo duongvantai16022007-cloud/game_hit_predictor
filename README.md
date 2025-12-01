@@ -2,7 +2,7 @@ A Machine Learning application that predicts whether a video game will be a comm
 
 - **Interactive UI:** Simple web interface to input game details.
 - **Smart Engineering:** Auto-calculates metrics like _Publisher Experience_ and _Competition Index_.
-- **Performance:** Achieves ~74% accuracy with detailed evaluation charts (ROC, Confusion Matrix).
+- **Performance:** Achieves ~74% accuracy 
 
 ## Quick Start
 
