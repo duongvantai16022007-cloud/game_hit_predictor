@@ -21,7 +21,7 @@ def visualize_feature_importance(model, encoder, num_cols, cat_cols):
         hue='Feature', 
         legend=False
     )
-    plt.title('TOP 20 MOST IMPORTANT FEATURES (HIT/FLOP)', fontsize=15, fontweight='bold')
+    plt.title('TOP 20 MOST IMPORTANT FEATURES', fontsize=15, fontweight='bold')
     plt.xlabel('Importance Score', fontsize=12)
     plt.ylabel('Feature', fontsize=12)
     plt.tight_layout()
@@ -32,4 +32,5 @@ model = results[0]
 encoder = results[2]
 num_cols = results[3]
 cat_cols = results[4]
+
 visualize_feature_importance(model, encoder, num_cols, cat_cols)
