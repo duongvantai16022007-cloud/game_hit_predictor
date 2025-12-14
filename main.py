@@ -119,9 +119,9 @@ def main():
                 st.write("Xác suất thành công:")
                 st.progress(int(proba[1]*100))
                 if pred == 1:
-                    st.success(f"Chúc mừng! **{name}** có tiềm năng trở thành bom tấn toàn cầu.")
+                    st.success(f"HIT")
                 else:
-                    st.warning(f"Cảnh báo! **{name}** có rủi ro thất bại cao. Cần cân nhắc lại chiến lược.")
+                    st.warning(f"FLOP")
             with tab_explain:
                 st.write("Các yếu tố ảnh hưởng lớn nhất đến kết quả này:")
                 with st.spinner("..."):
@@ -147,5 +147,6 @@ def main():
                 st.info(f"⏱ Thời gian huấn luyện Model: **{time_run:.4f} giây**")
                 st.info(f"Model Accuracy: **{acc*100:.2f}%**")
                 st.code(report_str, language='text')
+
 
 main()
