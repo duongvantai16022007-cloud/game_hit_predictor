@@ -37,8 +37,7 @@ def load_resources():
 
 @st.cache_data
 def load_raw_data():
-    try: return pd.read_csv('dataset.csv')
-    except: return None
+    return pd.read_csv('dataset.csv')
 
 def get_console_maker(platform):
     maker_map = {
@@ -71,7 +70,7 @@ def main():
                 plat_opts = sorted(df_raw['Platform'].unique()) if df_raw is not None else ['PC']
                 platform = st.selectbox("Hệ máy (Platform)", plat_opts)
                 is_sequel_str = st.radio("Là phần tiếp theo?", ("Có", "Không"), index=1, horizontal=True)
-                is_sequel = 0 if is_sequel_str == "Có" else 1
+                is_sequel = 1 if is_sequel_str == "Có" else 0
             with c_in2:
                 pub_opts = sorted(df_raw['Publisher'].unique()) if df_raw is not None else ['Nintendo']
                 publisher = st.selectbox("Nhà phát hành", pub_opts)
@@ -90,6 +89,7 @@ def main():
             last_5_years = unique_years[-5:]               
             recent_data = df_raw[df_raw['Year'].isin(last_5_years)]
             comp_index = recent_data['Competition_Index'].mean()
+            comp_source = "Dự báo (TB 5 năm)"
         
         if publisher in df_raw['Publisher'].values:
             raw_count = df_raw['Publisher'].value_counts()[publisher]
@@ -119,9 +119,10 @@ def main():
                 st.write("Xác suất thành công:")
                 st.progress(int(proba[1]*100))
                 if pred == 1:
-                    st.success(f"HIT")
+                    st.success(f"Chúc mừng! **{name}** có tiềm năng trở thành bom tấn toàn cầu.")
                 else:
-                    st.warning(f"FLOP")
+                    st.warning(f"Cảnh báo! **{name}** có rủi ro thất bại cao. Cần cân nhắc lại chiến lược.")
+                m3.metric("⚔️ Số Game Cạnh Tranh", f"{int(comp_index)}", delta=comp_source, delta_color="off", help=f"Ước tính có khoảng {int(comp_index)} game cùng phát hành trong năm {year}.")
             with tab_explain:
                 st.write("Các yếu tố ảnh hưởng lớn nhất đến kết quả này:")
                 with st.spinner("..."):
@@ -147,6 +148,5 @@ def main():
                 st.info(f"⏱ Thời gian huấn luyện Model: **{time_run:.4f} giây**")
                 st.info(f"Model Accuracy: **{acc*100:.2f}%**")
                 st.code(report_str, language='text')
-
 
 main()

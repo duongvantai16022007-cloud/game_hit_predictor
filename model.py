@@ -7,7 +7,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score, classification_report
 from imblearn.over_sampling import SMOTE
 data = 'dataset.csv'
-slp = 10
+slp = 30
 def model_rf():
     df = pd.read_csv(data)
     y = df['Hit_Target']
