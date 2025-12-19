@@ -7,10 +7,7 @@ def visualize_feature_importance(model, encoder, num_cols, cat_cols):
     cat_feature_names = list(encoder.get_feature_names_out(cat_cols))
     all_features = feature_names + cat_feature_names
     importances = model.feature_importances_
-    fi_df = pd.DataFrame({
-        'Feature': all_features,
-        'Importance': importances
-    })
+    fi_df = pd.DataFrame({'Feature': all_features,'Importance': importances})
     fi_df = fi_df.sort_values(by='Importance', ascending=False).head(20)
     plt.figure(figsize=(12, 8))
     sns.barplot(
