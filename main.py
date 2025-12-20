@@ -85,8 +85,8 @@ def main():
     with c1:
         st.image("https://cdn-icons-png.flaticon.com/512/3408/3408506.png", width=100)
     with c2:
-        st.title("AI Game Hit Predictor (v2)")
-        st.caption("Hệ thống hỗ trợ ra quyết định đầu tư Game (Live Learning Enabled)")
+        st.title("AI Game Hit Predictor")
+        st.caption("Hệ thống hỗ trợ ra quyết định đầu tư Game")
 
     data = load_resources()
     pipeline = data['pipeline']
@@ -198,7 +198,7 @@ def main():
                 m1.metric("Dự đoán", "HIT" if pred == 1 else "FLOP", delta="Thành công" if pred == 1 else "-Rủi ro")
                 m2.metric("Độ tin cậy", f"{proba[pred] * 100:.1f}%")
                 m3.metric("Cạnh tranh", f"{int(comp_index)}", delta=comp_source, delta_color="off")
-                m4.metric("Độ chính xác AI", f"{data['acc'] * 100:.1f}%")
+                m4.metric("Độ chính xác của model", f"{data['acc'] * 100:.1f}%")
 
                 st.progress(int(proba[1] * 100))
                 
