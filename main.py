@@ -197,22 +197,45 @@ def main():
                     k1, k2 = st.columns(2)
                     k1.metric("Critic Impact", f"{vals[critic_idx]:+.3f}")
                     k2.metric("User Impact", f"{vals[user_idx]:+.3f}")
-                fig, ax = plt.subplots(figsize=(8, 5))
-                indices = np.argsort(np.abs(vals))[-8:]
-                colors = ['#ff4b4b' if x > 0 else '#1f77b4' for x in vals[indices]]
-                bars = ax.barh(range(len(indices)), vals[indices], color=colors)
+                fig, ax = plt.subplots(figsize=(10, 6))
+                indices = np.argsort(np.abs(vals))[-10:]
+                colors = ['#ff4b4b' if vals[i] > 0 else '#1f77b4' for i in indices]
+                bars = ax.barh(range(len(indices)), vals[indices], color=colors, height=0.7)
+                max_val = np.max(np.abs(vals[indices])) if len(indices) > 0 else 0.1
+                offset = max_val * 0.02
                 for i, bar in enumerate(bars):
+                    value = vals[indices][i]
                     width = bar.get_width()
-                    label_x_pos = width if width > 0 else width - 0.02
-                    ax.text(label_x_pos, bar.get_y() + bar.get_height()/2, f'{vals[indices][i]:.2f}', va='center', fontsize=9)
+                    if value >= 0:
+                        label_x_pos = width + offset
+                        ha = 'left'
+                    else:
+                        label_x_pos = width - offset
+                        ha = 'right'
+                        
+                    ax.text(label_x_pos, bar.get_y() + bar.get_height()/2, 
+                            f'{value:.3f}', 
+                            va='center', ha=ha, fontsize=9, fontweight='bold', color='#333333')
+                clean_labels = []
+                for i in indices:
+                    name = feature_names[i]
+                    name = name.replace("Publisher_Group_", "Pub: ")
+                    name = name.replace("Console_Maker_", "Maker: ")
+                    name = name.replace("Genre_", "Genre: ")
+                    name = name.replace("Platform_", "Plat: ")
+                    if len(name) > 35: name = name[:32] + "..."
+                    clean_labels.append(name)
                 ax.set_yticks(range(len(indices)))
-                ax.set_yticklabels([feature_names[i] for i in indices], fontsize=10)
+                ax.set_yticklabels(clean_labels, fontsize=10)
+                ax.set_xlim(-max_val * 1.3, max_val * 1.3)
                 ax.set_xlabel("Mức độ tác động (+HIT / -FLOP)")
                 ax.spines['top'].set_visible(False)
                 ax.spines['right'].set_visible(False)
+                ax.axvline(0, color='grey', linewidth=0.8, linestyle='--')
                 st.pyplot(fig)
             with tab_stats:
                 st.info(f"Training Time: {data['time_run']:.4f}s")
                 st.code(data['report_str'])
 
 main()
+
