@@ -38,48 +38,35 @@ def load_and_engineer_features():
         'PC': 'PC'
     }
     df['Console_Maker'] = df['Platform'].map(maker_map).fillna('Other')
-
     year_counts = df['Year'].value_counts().sort_index()
     df['Competition_Index'] = df['Year'].map(year_counts.shift(1).fillna(0))
-
     df = df[df['Year'] >= 2000].copy()
     df['Hit_Target'] = (df['Global_Sales'] >= 0.2).astype(int)
-
     top_pubs = df['Publisher'].value_counts().nlargest(20).index
     df['Publisher_Group'] = df['Publisher'].apply(lambda x: x if x in top_pubs else 'Other')
-
     return df
 
 def train_new_model():
     df = load_and_engineer_features()
-    
-    num_features = ['Year', 'Name_Length', 'Is_Sequel', 'Word_Count', 'Competition_Index', 
-                    'Publisher_Experience', 'Critic_Score', 'User_Score']
+    num_features = ['Year', 'Name_Length', 'Is_Sequel', 'Word_Count', 'Competition_Index', 'Publisher_Experience', 'Critic_Score', 'User_Score']
     cat_features = ['Platform', 'Genre', 'Console_Maker', 'Publisher_Group']
-
     X = df[num_features + cat_features]
     y = df['Hit_Target']
-
     preprocessor = ColumnTransformer([
         ('num', StandardScaler(), num_features),
         ('cat', OneHotEncoder(handle_unknown='ignore', sparse_output=False), cat_features)
     ])
-
     pipeline = Pipeline([
         ('preprocessor', preprocessor),
         ('classifier', RandomForestClassifier(n_estimators=100, random_state=42, class_weight='balanced'))
     ])
-
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42, stratify=y)
-
     start_time = time.time()
     pipeline.fit(X_train, y_train)
     time_run = time.time() - start_time
-
     y_pred = pipeline.predict(X_test)
     acc = accuracy_score(y_test, y_pred)
     report_str = classification_report(y_test, y_pred, target_names=['FLOP', 'HIT'], zero_division=0)
-
     return {
         'pipeline': pipeline,
         'acc': acc,
@@ -119,7 +106,6 @@ def add_feedback_and_retrain(input_data, actual_label):
         df_new.to_csv(DATA_PATH, index=False)
     else:
         new_row.to_csv(DATA_PATH, index=False)
-    
     artifacts = train_new_model()
     joblib.dump(artifacts, MODEL_PATH)
     return artifacts
